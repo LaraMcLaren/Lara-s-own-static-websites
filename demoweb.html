@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sunrise — Simple Static Site</title>
+  <meta name="description" content="A simple static one-page site with a realistic gradient background." />
+  <style>
+    /* ---- Simple, self-contained styles ---- */
+    :root{
+      --bg-gradient: linear-gradient(120deg, #0f172a 0%, #065f46 30%, #f59e0b 70%, #fecdd3 100%);
+      --card: rgba(255,255,255,0.06);
+      --glass: rgba(255,255,255,0.08);
+      --accent: rgba(255,255,255,0.85);
+      --muted: rgba(255,255,255,0.7);
+      --radius: 14px;
+      --max-width: 1100px;
+      --shadow: 0 8px 28px rgba(2,6,23,0.45);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+
+    html,body{height:100%;}
+    body{
+      margin:0;
+      min-height:100%;
+      background: var(--bg-gradient);
+      color:var(--accent);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:48px 20px;
+      box-sizing:border-box;
+    }
+
+    .wrap{
+      width:100%;
+      max-width:var(--max-width);
+    }
+
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:36px;
+    }
+
+    .brand{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      text-decoration:none;
+      color:inherit;
+    }
+    .logo{
+      width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#ffffff22,#ffffff08);display:flex;align-items:center;justify-content:center;font-weight:700;
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(6px);
+    }
+
+    nav a{color:var(--muted);text-decoration:none;margin-left:18px;font-weight:600}
+
+    .hero{
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+      padding:36px;
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      display:grid;
+      grid-template-columns:1fr 420px;
+      gap:28px;
+      align-items:center;
+    }
+
+    .hero h1{
+      margin:0 0 12px 0;font-size: clamp(24px, 4.2vw, 42px);line-height:1.02;
+    }
+    .hero p{margin:0 0 20px 0;color:var(--muted);font-size:15px}
+
+    .btn{
+      display:inline-block;padding:12px 20px;border-radius:12px;font-weight:700;text-decoration:none;
+      background:linear-gradient(90deg, rgba(255,255,255,0.12), rgba(255,255,255,0.06));
+      color:var(--accent);border:1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 6px 18px rgba(2,6,23,0.35);
+    }
+
+    .hero-right{
+      background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      border-radius:12px;padding:20px;min-height:220px;display:flex;flex-direction:column;gap:12px;align-items:stretch;
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      border-radius:10px;padding:14px;border:1px solid rgba(255,255,255,0.04);
+    }
+
+    .features{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:22px;
+    }
+    .feature{padding:16px;border-radius:10px;background:var(--glass);}
+    .feature h3{margin:0 0 6px 0}
+    .feature p{margin:0;color:var(--muted);font-size:13px}
+
+    footer{margin-top:18px;color:var(--muted);font-size:13px;text-align:center}
+
+    /* Responsive */
+    @media (max-width:900px){
+      .hero{grid-template-columns:1fr;}
+      .hero-right{order:2}
+      .features{grid-template-columns:repeat(2,1fr)}
+    }
+    @media (max-width:520px){
+      nav a{display:none}
+      .features{grid-template-columns:1fr}
+      header{flex-direction:column;align-items:flex-start}
+    }
+
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <a class="brand" href="#">
+        <div class="logo">S</div>
+        <div>
+          <div style="font-weight:800">Sunrise</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">Realistic gradient demo</div>
+        </div>
+      </a>
+      <nav>
+        <a href="#">Home</a>
+        <a href="#features">Features</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main class="hero" role="main">
+      <div>
+        <h1>Simple, calm and realistic gradient background</h1>
+        <p>A single-file static website that uses a soft, natural gradient inspired by sunrise tones — easy to modify and perfect as a small landing page or portfolio intro.</p>
+
+        <a class="btn" href="#features">Explore features</a>
+
+        <div class="features" id="features">
+          <div class="feature card">
+            <h3>Responsive</h3>
+            <p>Works on phone, tablet and desktop with a compact CSS footprint.</p>
+          </div>
+          <div class="feature card">
+            <h3>Accessible</h3>
+            <p>High-contrast text, large hit targets and clear visuals for better readability.</p>
+          </div>
+          <div class="feature card">
+            <h3>Customizable</h3>
+            <p>Change the <code>--bg-gradient</code> variable to try other natural palettes quickly.</p>
+          </div>
+        </div>
+      </div>
+
+      <aside class="hero-right" aria-label="preview panel">
+        <div class="card" style="flex:1">
+          <strong>Palette</strong>
+          <div style="display:flex;gap:8px;margin-top:12px;align-items:center">
+            <div style="flex:1;height:40px;border-radius:8px;background:linear-gradient(90deg,#0f172a,#065f46);box-shadow:var(--shadow)"></div>
+            <div style="flex:1;height:40px;border-radius:8px;background:linear-gradient(90deg,#065f46,#f59e0b);box-shadow:var(--shadow)"></div>
+            <div style="flex:1;height:40px;border-radius:8px;background:linear-gradient(90deg,#f59e0b,#fecdd3);box-shadow:var(--shadow)"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <strong>Quick tips</strong>
+          <ul style="color:var(--muted);margin:8px 0 0 18px">
+            <li>Adjust gradient angle to suit your layout.</li>
+            <li>Use subtle glass cards to keep text readable over gradients.</li>
+            <li>Swap to a dark or light foreground color if you change the background drastically.</li>
+          </ul>
+        </div>
+      </aside>
+    </main>
+
+    <footer id="contact">
+      Crafted with a realistic gradient • Modify <code>--bg-gradient</code> in the top of the stylesheet to experiment.
+    </footer>
+  </div>
+</body>
+</html>

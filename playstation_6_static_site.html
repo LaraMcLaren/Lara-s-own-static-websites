@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PlayStation 6 — Showcase</title>
+  <style>
+    :root{
+      --bg1: 14, 17, 71; /* deep navy */
+      --bg2: 0, 200, 255; /* bright cyan */
+      --accent1: 255, 0, 122; /* pink */
+      --accent2: 0, 230, 118; /* green */
+      --glass: rgba(255,255,255,0.06);
+      --card-glow: 0 10px 30px rgba(0,0,0,0.6);
+      --radius: 18px;
+    }
+    /* page reset */
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      color: #e9f0ff;
+      background: linear-gradient(135deg, rgba(var(--bg1),1) 0%, rgba(var(--bg2),0.06) 60%), radial-gradient(600px 400px at 10% 10%, rgba(var(--accent1),0.06), transparent 20%), radial-gradient(500px 300px at 90% 90%, rgba(var(--accent2),0.05), transparent 20%);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      min-height:100vh;
+      display:flex;flex-direction:column;
+    }
+
+    header{
+      display:flex;align-items:center;justify-content:space-between;padding:24px 40px;backdrop-filter: blur(6px);
+    }
+    .logo{
+      display:flex;align-items:center;gap:14px;font-weight:700;letter-spacing:0.6px
+    }
+    .logo .mark{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg, rgba(var(--accent1),1), rgba(var(--bg2),1));display:flex;align-items:center;justify-content:center;box-shadow:0 6px 30px rgba(0,0,0,0.5);}
+    nav a{margin-left:18px;text-decoration:none;color:inherit;opacity:0.9}
+
+    /* HERO */
+    .hero{padding:40px;display:grid;grid-template-columns:1fr 480px;gap:36px;align-items:center}
+    .hero-card{background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));border-radius:var(--radius);padding:34px;box-shadow:var(--card-glow);position:relative;overflow:hidden}
+    .hero h1{font-size:38px;line-height:1.05;margin-bottom:10px}
+    .hero p{opacity:0.9;margin-bottom:18px}
+    .cta{display:inline-flex;align-items:center;gap:12px;padding:12px 18px;border-radius:12px;background:linear-gradient(90deg, rgba(var(--accent1),0.12), rgba(var(--accent2),0.12));border:1px solid rgba(255,255,255,0.04);cursor:pointer}
+
+    /* Parallax ship */
+    .console-visual{height:420px;border-radius:20px;background:linear-gradient(180deg, rgba(0,0,0,0.3), rgba(255,255,255,0.02));display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+    .console-visual .ps-body{width:340px;height:220px;border-radius:28px;background:linear-gradient(135deg, rgba(20,20,60,1), rgba(40,10,90,0.9));box-shadow:0 30px 80px rgba(0,0,0,0.6);transform:rotate(-6deg);position:absolute;left:10%;top:30%;}
+    .glow-orb{position:absolute;width:160px;height:160px;border-radius:50%;filter:blur(50px);opacity:0.18;right:8%;top:10%;background:radial-gradient(circle, rgba(var(--bg2),1) 0%, rgba(var(--bg2),0.1) 45%, transparent 70%)}
+
+    /* GAMES GRID */
+    .games{padding:30px 40px 80px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:22px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:16px;padding:18px;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,0.04);}
+    .char{display:flex;gap:14px;align-items:center}
+    .avatar{width:84px;height:84px;border-radius:12px;background:linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));display:flex;align-items:center;justify-content:center;font-weight:700}
+    .name{font-size:18px}
+    .desc{opacity:0.85;font-size:13px;margin-top:6px}
+    .weapons{display:flex;gap:10px;margin-top:12px}
+    .weapon{width:44px;height:44px;border-radius:10px;background:var(--glass);display:grid;place-items:center;border:1px solid rgba(255,255,255,0.03);transform-origin:center;}
+
+    /* Animations */
+    .fade-in{animation:fadeInUp .8s cubic-bezier(.22,.9,.35,1) both}
+    .float{animation:float 6s ease-in-out infinite}
+    .spin{animation:spin 6s linear infinite}
+
+    @keyframes fadeInUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+    @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+    /* hover effects */
+    .card:hover{transform:translateY(-8px) scale(1.01);transition:all .36s;box-shadow:0 30px 70px rgba(0,0,0,0.7)}
+    .weapon:hover{transform:translateY(-6px) scale(1.06) rotate(-6deg);transition:all .28s}
+
+    footer{padding:24px 40px;border-top:1px solid rgba(255,255,255,0.02);margin-top:auto;display:flex;justify-content:space-between;align-items:center}
+
+    /* responsiveness */
+    @media (max-width:900px){
+      .hero{grid-template-columns:1fr;}
+      .console-visual{height:320px}
+    }
+  </style>
+</head>
+<body>
+  <header class="fade-in">
+    <div class="logo">
+      <div class="mark">PS</div>
+      <div>
+        <div style="font-size:15px">PlayStation 6</div>
+        <div style="font-size:12px;opacity:0.7;margin-top:2px">Next-gen showcase</div>
+      </div>
+    </div>
+    <nav class="fade-in">
+      <a href="#features">Features</a>
+      <a href="#games">Games</a>
+      <a href="#gallery">Gallery</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-card fade-in">
+        <h1>PlayStation 6 — The next generation of immersive play</h1>
+        <p>RGB gradients, realistic haptics, photoreal rendering and a stable frame-rate for the classics and new legends. Explore 5 major characters from flagship titles with rich animations and interactive weapon showcases.</p>
+        <div style="display:flex;gap:12px;align-items:center">
+          <div class="cta" onclick="document.getElementById('games').scrollIntoView({behavior:'smooth'})">Explore Games →</div>
+          <div style="opacity:0.85;font-size:13px">Demo build • Static prototype</div>
+        </div>
+        <div style="margin-top:18px;display:flex;gap:10px;align-items:center">
+          <div style="width:12px;height:12px;border-radius:50%;background:rgb(var(--accent1));box-shadow:0 8px 30px rgba(var(--accent1),0.12)"></div>
+          <div style="font-size:13px;opacity:0.8">RGB gradient theme • Realistic glow • Smooth animations</div>
+        </div>
+      </div>
+
+      <div class="console-visual fade-in float">
+        <div class="glow-orb"></div>
+        <div class="ps-body"></div>
+        <!-- animated floating logo -->
+        <svg style="position:absolute;right:8%;bottom:6%;width:160px;opacity:0.95;" viewBox="0 0 200 60">
+          <defs>
+            <linearGradient id="g1" x1="0" x2="1">
+              <stop offset="0" stop-color="rgba(255,0,122,1)" />
+              <stop offset="1" stop-color="rgba(0,200,255,1)" />
+            </linearGradient>
+          </defs>
+          <text x="0" y="40" font-size="36" font-weight="700" fill="url(#g1)" style="filter:drop-shadow(0 6px 20px rgba(0,0,0,0.6))">PS6</text>
+        </svg>
+      </div>
+    </section>
+
+    <section id="games" class="games">
+      <h2 style="margin-bottom:18px;padding-left:2px">Flagship Characters & Weapons</h2>
+      <div class="grid">
+        <!-- Card 1: Kratos -->
+        <article class="card fade-in" style="animation-delay:.05s">
+          <div class="char">
+            <div class="avatar spin" aria-hidden>⚔️</div>
+            <div>
+              <div class="name">Kratos — God of War</div>
+              <div class="desc">Rage-fueled Spartan with Leviathan Axe and Blades of Chaos. Immersive hit feedback & slow-motion parries.</div>
+            </div>
+          </div>
+          <div class="weapons">
+            <div class="weapon float" title="Leviathan Axe">🪓</div>
+            <div class="weapon" title="Blades of Chaos">🔥</div>
+            <div class="weapon" title="Shield">🛡️</div>
+          </div>
+        </article>
+
+        <!-- Card 2: Aloy -->
+        <article class="card fade-in" style="animation-delay:.12s">
+          <div class="char">
+            <div class="avatar" aria-hidden>🏹</div>
+            <div>
+              <div class="name">Aloy — Horizon</div>
+              <div class="desc">Master hunter with ranged arsenal: Tripcaster, Shock Bow, and traps. Environmental interactions and stealth.</div>
+            </div>
+          </div>
+          <div class="weapons">
+            <div class="weapon" title="Ranged Bow">🏹</div>
+            <div class="weapon" title="Tripcaster">🕸️</div>
+            <div class="weapon" title="Spear">🔱</div>
+          </div>
+        </article>
+
+        <!-- Card 3: Nathan Drake -->
+        <article class="card fade-in" style="animation-delay:.18s">
+          <div class="char">
+            <div class="avatar" aria-hidden>🔫</div>
+            <div>
+              <div class="name">Nathan Drake — Uncharted</div>
+              <div class="desc">Adventurer, quick with pistols and grappling—cinematic setpieces and climb animations with ragdoll physics.</div>
+            </div>
+          </div>
+          <div class="weapons">
+            <div class="weapon" title="Pistol">🔫</div>
+            <div class="weapon" title="Shotgun">💥</div>
+            <div class="weapon" title="Grapple">🪢</div>
+          </div>
+        </article>
+
+        <!-- Card 4: Spider-Man -->
+        <article class="card fade-in" style="animation-delay:.24s">
+          <div class="char">
+            <div class="avatar float" aria-hidden>🕷️</div>
+            <div>
+              <div class="name">Spider-Man — Marvel's Spider-Man</div>
+              <div class="desc">Web-slinger with acrobatic traversal, gadget loadouts and high-frequency haptics for web-zip and punches.</div>
+            </div>
+          </div>
+          <div class="weapons">
+            <div class="weapon" title="Web Shooters">🕸️</div>
+            <div class="weapon" title="Gadgets">🧲</div>
+            <div class="weapon" title="Suit Mods">🛠️</div>
+          </div>
+        </article>
+
+        <!-- Card 5: Ratchet -->
+        <article class="card fade-in" style="animation-delay:.3s">
+          <div class="char">
+            <div class="avatar spin" aria-hidden>🛠️</div>
+            <div>
+              <div class="name">Ratchet — Ratchet & Clank</div>
+              <div class="desc">Inventive arsenal: OmniWrench, RYNO-class heavy weapons and zany gadgets with explosive visual FX.</div>
+            </div>
+          </div>
+          <div class="weapons">
+            <div class="weapon spin" title="OmniWrench">🔧</div>
+            <div class="weapon" title="Blaster">⚡</div>
+            <div class="weapon" title="Rocket">🚀</div>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- Gallery / animated scene -->
+      <div id="gallery" style="margin-top:28px;display:grid;grid-template-columns:1fr 1fr;gap:18px">
+        <div class="card fade-in" style="min-height:160px;display:flex;align-items:center;justify-content:center">
+          <div style="text-align:center">
+            <div style="font-weight:700;font-size:16px;margin-bottom:8px">Dynamic Weapon Showcase</div>
+            <div style="opacity:0.85;font-size:13px">Click any weapon in the cards to trigger a demo animation.</div>
+          </div>
+        </div>
+        <div class="card fade-in" style="min-height:160px;">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="font-weight:700">Live Preview</div>
+              <div style="opacity:0.7;font-size:13px">Prototype</div>
+            </div>
+            <div id="preview" style="height:90px;border-radius:10px;background:linear-gradient(90deg,rgba(255,255,255,0.02),transparent);display:grid;place-items:center">No weapon selected</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div>© PlayStation 6 Prototype — Static demo</div>
+    <div style="opacity:0.8;font-size:13px">Built with love for immersive demos</div>
+  </footer>
+
+  <script>
+    // Simple interactive demo: clicking a weapon shows a small animated preview
+    document.querySelectorAll('.weapon').forEach(w => {
+      w.addEventListener('click', () => {
+        const preview = document.getElementById('preview');
+        const icon = w.textContent || '•';
+        preview.innerHTML = `<div style=\"font-size:36px;margin-bottom:6px\">${icon}</div><div style=\"opacity:0.9\">Firing demo: ${w.title}</div>`;
+        preview.animate([{transform:'translateY(0)'},{transform:'translateY(-8px)'},{transform:'translateY(0)'}],{duration:700,easing:'ease-out'})
+      })
+    })
+
+    // subtle parallax for header mark based on mouse
+    const mark = document.querySelector('.mark');
+    document.addEventListener('mousemove', e => {
+      const x = (e.clientX / window.innerWidth - 0.5) * 20;
+      const y = (e.clientY / window.innerHeight - 0.5) * 10;
+      if(mark) mark.style.transform = `translate(${x}px, ${y}px)`;
+    })
+
+    // Accessibility: reduce motion if user prefers
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if(mq && mq.matches){
+      document.querySelectorAll('.float, .spin, .fade-in').forEach(el=>el.style.animation='none')
+    }
+  </script>
+
+  <!-- How to use: save this file as index.html and open in a modern browser. Replace emoji with real images and swap icons for SVG assets as needed. -->
+</body>
+</html>

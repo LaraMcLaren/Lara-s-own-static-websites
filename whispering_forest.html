@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Whispering Forest</title>
+  <meta name="description" content="A peaceful magical forest website for kids and dreamers, with smooth animations and background sounds." />
+  <style>
+    :root{
+      --forest-top: rgb(42,66,48);
+      --forest-mid: rgb(72,120,90);
+      --forest-bottom: rgb(200,240,210);
+      --glow: rgb(255,255,210);
+      --accent: rgb(160,210,255);
+      --text: rgb(240,245,240);
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html,body{height:100%;font-family:'Poppins',sans-serif;overflow-x:hidden;}
+    body{
+      background:linear-gradient(180deg,var(--forest-top),var(--forest-mid),var(--forest-bottom));
+      color:var(--text);
+    }
+
+    header{text-align:center;padding:60px 20px;font-size:clamp(28px,6vw,56px);font-weight:700;text-shadow:0 0 10px rgba(255,255,255,0.2);animation:fadeIn 2s ease-out;}
+
+    @keyframes fadeIn{from{opacity:0;transform:translateY(-30px);}to{opacity:1;transform:none;}}
+
+    .firefly{
+      position:absolute;width:6px;height:6px;background:var(--glow);border-radius:50%;box-shadow:0 0 10px var(--glow);
+      animation:float 6s ease-in-out infinite, twinkle 3s infinite;
+    }
+    @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-20px);}}
+    @keyframes twinkle{0%,100%{opacity:0.3;}50%{opacity:1;}}
+
+    .container{text-align:center;padding:40px 20px;}
+
+    .card{
+      display:inline-block;width:260px;margin:20px;padding:20px;border-radius:20px;
+      background:rgba(255,255,255,0.1);backdrop-filter:blur(8px);
+      box-shadow:0 10px 20px rgba(0,0,0,0.2);transition:transform .4s, box-shadow .4s;
+    }
+    .card:hover{transform:translateY(-10px) scale(1.05);box-shadow:0 14px 40px rgba(0,0,0,0.3);}
+
+    .card img{width:100%;border-radius:16px;}
+    .card h3{margin-top:12px;font-size:20px;color:rgb(255,255,240);}
+    .card p{font-size:14px;color:rgb(235,235,230);}
+
+    .controls{position:fixed;top:20px;right:20px;background:rgba(255,255,255,0.1);backdrop-filter:blur(8px);border-radius:30px;padding:10px 20px;cursor:pointer;display:flex;align-items:center;gap:8px;color:var(--text);box-shadow:0 4px 20px rgba(0,0,0,0.2);}
+    .controls:hover{background:rgba(255,255,255,0.2);}
+
+    footer{text-align:center;padding:40px 20px;font-size:14px;color:rgba(255,255,255,0.8);}
+  </style>
+</head>
+<body>
+  <header>🌲 Whispering Forest 🧚‍♀️</header>
+
+  <div class="container">
+    <p style="font-size:18px;max-width:600px;margin:0 auto 40px;">Welcome to the Whispering Forest — a gentle world of fairies, fireflies, and glowing dreams. Explore, relax, and listen to the whispers of the woods.</p>
+
+    <div class="card">
+      <img src="https://cdn.pixabay.com/photo/2017/08/30/07/49/fantasy-2690315_640.jpg" alt="Fairy lights" />
+      <h3>Firefly Glade</h3>
+      <p>Follow the flickering lights and discover hidden fairy circles among the moss.</p>
+    </div>
+
+    <div class="card">
+      <img src="https://cdn.pixabay.com/photo/2019/09/06/07/30/forest-4450284_640.jpg" alt="Enchanted tree" />
+      <h3>Tree of Whispers</h3>
+      <p>Every rustle of the leaves tells a story. Sit quietly and listen to their magic.</p>
+    </div>
+
+    <div class="card">
+      <img src="https://cdn.pixabay.com/photo/2021/03/06/20/39/mystical-6074989_640.jpg" alt="Mystic pond" />
+      <h3>Mystic Pond</h3>
+      <p>Peer into its waters to see dreams reflected in shimmering moonlight.</p>
+    </div>
+  </div>
+
+  <div class="controls" id="musicToggle">🎵 Play Forest Sounds</div>
+
+  <footer>© 2025 Whispering Forest • Drift softly, dream deeply 🍃</footer>
+
+  <audio id="forestAudio" loop>
+    <source src="https://cdn.pixabay.com/download/audio/2023/04/12/audio_97f5abcb12.mp3?filename=forest-nature-ambience-143906.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    // create fireflies
+    for(let i=0;i<30;i++){
+      const f=document.createElement('div');
+      f.className='firefly';
+      f.style.left=Math.random()*100+'%';
+      f.style.top=Math.random()*100+'%';
+      f.style.animationDelay=(Math.random()*5)+'s';
+      f.style.width=f.style.height=(Math.random()*4+3)+'px';
+      document.body.appendChild(f);
+    }
+
+    // music toggle
+    const toggle=document.getElementById('musicToggle');
+    const audio=document.getElementById('forestAudio');
+    let playing=false;
+    toggle.addEventListener('click',()=>{
+      if(!playing){audio.play();toggle.textContent='🔇 Pause Forest Sounds';playing=true;}
+      else{audio.pause();toggle.textContent='🎵 Play Forest Sounds';playing=false;}
+    });
+  </script>
+</body>
+</html>

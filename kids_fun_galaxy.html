@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Kids Fun Galaxy</title>
+  <meta name="description" content="A colorful, animated static website for kids — fun, playful and bright." />
+  <style>
+    :root{
+      --bg-top: rgb(255,176,189);
+      --bg-mid: rgb(255,220,180);
+      --bg-bottom: rgb(172,231,255);
+      --star: rgb(255,255,190);
+      --planet1: rgb(255,100,140);
+      --planet2: rgb(100,200,255);
+      --planet3: rgb(255,220,90);
+      --text: rgb(40,40,60);
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html,body{height:100%;font-family:'Comic Sans MS', 'Poppins', sans-serif;overflow-x:hidden;}
+    body{
+      background:linear-gradient(180deg,var(--bg-top),var(--bg-mid),var(--bg-bottom));
+      color:var(--text);
+    }
+
+    header{
+      text-align:center;padding:40px 20px;
+      font-size:clamp(28px,6vw,48px);
+      font-weight:700;
+      animation:pop 1.2s ease-out;
+    }
+
+    @keyframes pop{0%{transform:scale(0.5);opacity:0;}80%{transform:scale(1.1);}100%{transform:scale(1);opacity:1;}}
+
+    .planet{
+      position:absolute;border-radius:50%;opacity:0.9;animation:float 6s ease-in-out infinite;
+    }
+    .planet.one{width:100px;height:100px;top:60px;left:60px;background:radial-gradient(circle,var(--planet1) 40%,rgba(255,100,140,0.4));animation-delay:0s;}
+    .planet.two{width:80px;height:80px;bottom:100px;right:80px;background:radial-gradient(circle,var(--planet2) 40%,rgba(100,200,255,0.4));animation-delay:2s;}
+    .planet.three{width:60px;height:60px;top:200px;right:160px;background:radial-gradient(circle,var(--planet3) 40%,rgba(255,220,90,0.4));animation-delay:4s;}
+
+    @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-15px);}}
+
+    .stars span{
+      position:absolute;width:4px;height:4px;background:var(--star);border-radius:50%;opacity:0.9;animation:twinkle 3s infinite;
+    }
+    @keyframes twinkle{0%,100%{opacity:0.3;}50%{opacity:1;}}
+
+    .container{text-align:center;padding:40px 20px;}
+
+    .card{
+      display:inline-block;width:260px;margin:20px;padding:20px;border-radius:20px;background:white;
+      box-shadow:0 8px 20px rgba(0,0,0,0.1);transition:transform .4s;
+    }
+    .card:hover{transform:translateY(-10px) rotate(2deg);}
+
+    .card img{width:100%;border-radius:16px;}
+    .card h3{margin-top:12px;font-size:20px;color:rgb(60,60,80);}
+    .card p{font-size:14px;color:rgb(90,90,110);}
+
+    footer{text-align:center;padding:20px;font-size:14px;color:rgb(70,70,90);}
+  </style>
+</head>
+<body>
+  <div class="stars"></div>
+  <div class="planet one"></div>
+  <div class="planet two"></div>
+  <div class="planet three"></div>
+
+  <header>🌈 Kids Fun Galaxy 🚀</header>
+
+  <section class="container">
+    <p style="font-size:18px;max-width:600px;margin:0 auto 20px;">Welcome to the colorful world of learning and fun! Explore planets, play mini games, and meet friendly characters across the galaxy.</p>
+
+    <div class="card">
+      <img src="https://cdn.pixabay.com/photo/2016/03/31/20/52/astronaut-1297491_640.png" alt="Astronaut kid" />
+      <h3>Space Explorer</h3>
+      <p>Fly with Luna the astronaut and learn about stars, moons, and galaxies!</p>
+    </div>
+
+    <div class="card">
+      <img src="https://cdn.pixabay.com/photo/2017/01/31/21/22/cartoon-2027612_640.png" alt="Animal friends" />
+      <h3>Animal Planet</h3>
+      <p>Meet the jungle crew and play quiz games to learn animal sounds.</p>
+    </div>
+
+    <div class="card">
+      <img src="https://cdn.pixabay.com/photo/2017/02/01/10/28/cartoon-2027720_640.png" alt="Rainbow art" />
+      <h3>Rainbow Painter</h3>
+      <p>Mix colors and paint your dream rainbow — creativity never ends!</p>
+    </div>
+  </section>
+
+  <footer>© 2025 Kids Fun Galaxy • Made with love, colors, and imagination 🌟</footer>
+
+  <script>
+    // create twinkling stars
+    const stars=document.querySelector('.stars');
+    for(let i=0;i<40;i++){
+      const s=document.createElement('span');
+      s.style.left=Math.random()*100+'%';
+      s.style.top=Math.random()*80+'%';
+      s.style.width=s.style.height=(Math.random()*3+1)+'px';
+      s.style.animationDelay=(Math.random()*3)+'s';
+      stars.appendChild(s);
+    }
+  </script>
+</body>
+</html>

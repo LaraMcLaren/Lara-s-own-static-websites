@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Funky Comic Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg-a: #ffecd2;
+      --bg-b: #fcb69f;
+      --bg-c: #ff5f6d;
+      --panel: rgba(255,255,255,0.9);
+      --accent: #fff200; /* comic yellow */
+      --muted: #333;
+      --glass: rgba(255,255,255,0.6);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;font-family:Inter, system-ui, -apple-system;min-height:100vh;display:flex;align-items:center;justify-content:center;
+      background: radial-gradient(1200px 600px at 10% 20%, #ffd6e0 0%, transparent 25%),
+                  radial-gradient(900px 500px at 90% 80%, #c7f9ff 0%, transparent 18%),
+                  linear-gradient(135deg,var(--bg-a),var(--bg-b) 40%, var(--bg-c));
+      padding:28px;
+    }
+
+    .wrap{width:420px;max-width:100%;position:relative;border-radius:20px;padding:18px;background:linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.92));box-shadow:0 20px 50px rgba(0,0,0,0.18);overflow:hidden}
+
+    /* funky comic stickers (SVG & emojis) */
+    .sticker{position:absolute;z-index:0;filter:drop-shadow(0 8px 12px rgba(0,0,0,0.12));}
+    .st-1{left:-30px;top:-30px;width:140px;transform:rotate(-12deg)}
+    .st-2{right:-40px;bottom:-40px;width:160px;transform:rotate(18deg)}
+    .st-3{left:16px;bottom:10px;width:80px}
+
+    header{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+    .logo{display:flex;align-items:center;gap:10px}
+    .title{font-family:'Bangers',cursive;font-size:28px;color:#ff2d95;text-shadow:0 3px 0 rgba(0,0,0,0.06)}
+    .subtitle{font-size:12px;color:var(--muted);opacity:0.9}
+
+    .screen{position:relative;z-index:1;background:linear-gradient(180deg,#fff,#fff);border-radius:12px;padding:16px;text-align:right;margin-bottom:14px;min-height:78px;display:flex;flex-direction:column;justify-content:center;box-shadow:inset 0 -6px 12px rgba(0,0,0,0.05)}
+    .prev{font-size:13px;color:#777}
+    .curr{font-size:34px;font-weight:700;color:#151515}
+
+    .keys{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;z-index:1}
+    button{padding:14px;border-radius:12px;border:0;cursor:pointer;font-weight:700;font-size:18px}
+
+    /* colorful playful buttons */
+    .num{background:linear-gradient(180deg,#fff,#f6f6f6);box-shadow:0 8px 20px rgba(0,0,0,0.08)}
+    .op{background:linear-gradient(180deg,#ffd1dc,#ff9ab1);color:#18032e;box-shadow:0 10px 24px rgba(255,90,140,0.18)}
+    .equals{grid-column:span 2;background:linear-gradient(90deg,#00f5a0,#00d4ff);color:#042;box-shadow:0 12px 30px rgba(0,213,255,0.16)}
+    .clear{background:linear-gradient(90deg,#fff176,#ffb74d);color:#2b1f00}
+    .zero{grid-column:span 2}
+
+    .small{font-size:13px;padding:10px;border-radius:10px}
+
+    .footer{margin-top:12px;font-size:13px;color:#444;text-align:center}
+
+    /* sticker comic text bubble */
+    .bubble{position:absolute;z-index:2;right:10px;top:6px;background:var(--accent);padding:8px 12px;border-radius:12px;font-weight:800;color:#111;box-shadow:0 8px 20px rgba(0,0,0,0.12);transform:rotate(-6deg);font-family:'Bangers',cursive}
+
+    /* responsive */
+    @media (max-width:480px){ .wrap{padding:14px} .curr{font-size:28px} }
+
+    /* tiny interactive pop */
+    button:active{transform:translateY(2px)}
+  </style>
+</head>
+<body>
+  <div class="wrap" role="application" aria-label="Funky comic calculator">
+
+    <!-- stickers: simple SVG comics & emoji -->
+    <svg class="sticker st-1" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="g1" x1="0" x2="1"><stop offset="0" stop-color="#fff79a"/><stop offset="1" stop-color="#ffb3c1"/></linearGradient>
+      </defs>
+      <rect x="0" y="0" width="120" height="120" rx="18" fill="url(#g1)"/>
+      <text x="12" y="70" font-family="Bangers, cursive" font-size="36" fill="#ff2d95">POP!</text>
+    </svg>
+
+    <svg class="sticker st-2" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="90" cy="90" r="80" fill="#ffe2b8"/>
+      <text x="50" y="110" font-family="Bangers, cursive" font-size="40" fill="#ff6f00">BOOM</text>
+    </svg>
+
+    <div class="sticker st-3">💥</div>
+
+    <div class="bubble">FUN!</div>
+
+    <header>
+      <div class="logo">
+        <div style="width:46px;height:46px;border-radius:10px;background:linear-gradient(135deg,#ff9a9e,#fad0c4);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,0.12)">🧠</div>
+        <div>
+          <div class="title">Brand Lara</div>
+          <div class="subtitle">Comic • Funky • Playful</div>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-weight:700;color:#ff3d6d">v1.0</div>
+      </div>
+    </header>
+
+    <section class="screen">
+      <div class="prev" id="previous">&nbsp;</div>
+      <div class="curr" id="display">0</div>
+    </section>
+
+    <section class="keys" aria-label="calculator keys">
+      <button class="clear small" data-action="clear">AC</button>
+      <button class="small" data-action="back">⌫</button>
+      <button class="small" data-action="percent">%</button>
+      <button class="op small" data-action="/">÷</button>
+
+      <button class="num" data-num="7">7</button>
+      <button class="num" data-num="8">8</button>
+      <button class="num" data-num="9">9</button>
+      <button class="op" data-action="*">×</button>
+
+      <button class="num" data-num="4">4</button>
+      <button class="num" data-num="5">5</button>
+      <button class="num" data-num="6">6</button>
+      <button class="op" data-action="-">−</button>
+
+      <button class="num" data-num="1">1</button>
+      <button class="num" data-num="2">2</button>
+      <button class="num" data-num="3">3</button>
+      <button class="op" data-action="+">+</button>
+
+      <button class="num zero" data-num="0">0</button>
+      <button class="num" data-num=".">.</button>
+      <button class="equals" data-action="=">=</button>
+    </section>
+
+    <div class="footer">Tip: Try keyboard input. Press Enter for = • Esc to clear</div>
+  </div>
+
+  <script>
+    (function(){
+      const display = document.getElementById('display');
+      const previousEl = document.getElementById('previous');
+      let current = '0';
+      let previous = '';
+      let operator = null;
+      let overwrite = false;
+
+      function update(){
+        display.textContent = current;
+        previousEl.textContent = previous || '\u00A0';
+      }
+
+      function inputDigit(d){
+        if (overwrite){ current = d; overwrite = false; return }
+        if (d === '.' && current.includes('.')) return;
+        if (current === '0' && d !== '.') current = d; else current += d;
+      }
+
+      function chooseOperator(op){
+        if (operator && !overwrite) compute();
+        operator = op;
+        previous = current + ' ' + (op === '*'? '×' : op === '/'? '÷' : op);
+        overwrite = true;
+      }
+
+      function compute(){
+        if (!operator) return;
+        const a = parseFloat(previous);
+        const b = parseFloat(current);
+        if (isNaN(a) || isNaN(b)) return;
+        let res = 0;
+        switch(operator){
+          case '+': res = a + b; break;
+          case '-': res = a - b; break;
+          case '*': res = a * b; break;
+          case '/': res = b === 0 ? 'Error' : a / b; break;
+        }
+        current = (typeof res === 'number' && !Number.isInteger(res)) ? parseFloat(res.toFixed(10)) : String(res);
+        previous = '';
+        operator = null;
+        overwrite = true;
+      }
+
+      function percent(){
+        const val = parseFloat(current);
+        if (isNaN(val)) return;
+        current = String(val / 100);
+        overwrite = true;
+      }
+
+      function backspace(){
+        if (overwrite || current.length <= 1){ current = '0'; overwrite = false; return }
+        current = current.slice(0,-1);
+      }
+
+      function clearAll(){ current = '0'; previous = ''; operator = null; overwrite = false }
+
+      document.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const num = btn.getAttribute('data-num');
+          const action = btn.getAttribute('data-action');
+          if (num !== null){ inputDigit(num); update(); return }
+          if (!action) return;
+          if (action === 'clear'){ clearAll(); update(); return }
+          if (action === 'back'){ backspace(); update(); return }
+          if (action === 'percent'){ percent(); update(); return }
+          if (action === '='){ compute(); update(); return }
+          chooseOperator(action); update();
+        })
+      });
+
+      window.addEventListener('keydown', (e) => {
+        if ((e.key >= '0' && e.key <= '9') || e.key === '.') { inputDigit(e.key); update(); return }
+        if (e.key === 'Backspace') { backspace(); update(); return }
+        if (e.key === 'Escape') { clearAll(); update(); return }
+        if (e.key === 'Enter' || e.key === '=') { compute(); update(); return }
+        if (['+','-','*','/'].includes(e.key)) { chooseOperator(e.key); update(); return }
+        if (e.key === '%') { percent(); update(); return }
+      });
+
+      update();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Animals of the Wild — Forest Theme</title>
+  <style>
+    :root{
+      --bg1: 18,34,24; /* deep pine */
+      --bg2: 34,70,55; /* moss */
+      --accent1: 86,171,114; /* leafy green */
+      --accent2: 199,183,108; /* sunlit moss */
+      --card-bg: 255,255,255; /* cards will use translucent white */
+      --glass: 0.12;
+      --glass-2: 0.08;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      color:rgba(245,245,240,0.95);
+      background: radial-gradient(circle at 10% 20%, rgba(var(--accent1)/0.08) 0%, transparent 20%),
+                  linear-gradient(180deg, rgb(var(--bg1)) 0%, rgb(var(--bg2)) 60%);
+      -webkit-font-smoothing:antialiased;
+      overflow-x:hidden;
+      min-height:100vh;
+      display:flex;flex-direction:column;
+    }
+
+    /* header */
+    header{
+      padding:28px 24px; display:flex;align-items:center;justify-content:space-between;gap:12px;
+      position:relative;z-index:5;
+      backdrop-filter: blur(6px);
+    }
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{
+      width:56px;height:56px;border-radius:12px;flex:0 0 56px;
+      background:linear-gradient(135deg, rgba(var(--accent1),0.18), rgba(var(--accent2),0.12));
+      display:flex;align-items:center;justify-content:center;font-weight:700;color:rgba(255,255,255,0.95);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+    }
+    h1{font-size:18px;margin:0}
+    p.lead{margin:0;color:rgba(235,235,230,0.8);font-size:13px}
+
+    /* hero */
+    .hero{
+      position:relative;padding:48px 24px 64px;display:grid;grid-template-columns:1fr 420px;gap:28px;align-items:center;z-index:2;
+    }
+    .hero-card{background:linear-gradient(180deg, rgba(255,255,255,var(--glass)) 0%, rgba(255,255,255,var(--glass-2)) 100%);
+      border-radius:18px;padding:28px;box-shadow:0 12px 40px rgba(0,0,0,0.45);backdrop-filter: blur(6px);color:#eaf7ea}
+    .hero h2{margin:0 0 10px 0;font-size:28px}
+    .cta{margin-top:16px;display:inline-block;padding:10px 16px;border-radius:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.06);cursor:pointer}
+
+    /* mountains svg container */
+    .mountains-wrap{position:relative;height:360px;border-radius:18px;overflow:hidden}
+    .mountains-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+
+    /* rain canvas */
+    #rainCanvas{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none}
+
+    /* animals grid */
+    main{padding:12px 24px 60px;flex:1}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+    .card{
+      background:rgba(var(--card-bg),0.06);border-radius:14px;padding:14px;overflow:hidden;position:relative;min-height:160px;
+      transition:transform .35s cubic-bezier(.2,.9,.2,1),box-shadow .35s;cursor:default;border:1px solid rgba(255,255,255,0.04)
+    }
+    .card:hover{transform:translateY(-10px);box-shadow:0 18px 40px rgba(0,0,0,0.45)}
+    .animal-img{height:110px;width:100%;border-radius:10px;background-size:cover;background-position:center;filter:brightness(.95) saturate(1.05);}
+    .animal-title{margin:10px 0 0 0;font-weight:700}
+    .animal-sub{font-size:13px;color:rgba(230,230,225,0.7);margin-top:6px}
+
+    /* footer */
+    footer{padding:18px 24px;color:rgba(220,220,215,0.6);font-size:13px}
+
+    /* subtle parallax layers (mountains) */
+    .mountain-layer{position:absolute;left:0;right:0;bottom:0;height:45%;transform-origin:bottom center}
+    .mountain-1{background:linear-gradient(180deg,#0f2a1f 0%, rgba(10,20,20,0.3) 100%);clip-path:polygon(0 100%, 10% 70%, 22% 78%, 35% 60%, 48% 75%, 60% 55%, 74% 68%, 90% 52%, 100% 100%);} 
+    .mountain-2{height:55%;opacity:0.9;transform:translateY(8%);background:linear-gradient(180deg,#1a3b2d 0%, rgba(20,40,30,0.2) 100%);clip-path:polygon(0 100%, 12% 68%, 27% 80%, 40% 62%, 55% 78%, 70% 60%, 85% 80%, 100% 100%);} 
+    .trees{position:absolute;left:0;right:0;bottom:4%;height:40%;background:linear-gradient(180deg, rgba(3,20,12,0.0) 0%, rgba(1,10,6,0.9) 100%);clip-path:polygon(0 100%, 6% 72%, 12% 74%, 18% 64%, 25% 70%, 32% 61%, 38% 68%, 46% 58%, 55% 70%, 64% 60%, 72% 68%, 82% 53%, 100% 100%);opacity:0.95}
+
+    /* responsive */
+    @media (max-width:880px){
+      .hero{grid-template-columns:1fr;}
+      .mountains-wrap{height:300px}
+    }
+
+    /* small helper for credit chips */
+    .chip{background:rgba(255,255,255,0.04);padding:6px 10px;border-radius:999px;font-size:12px}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="logo">🌿</div>
+      <div>
+        <h1>Animals of the Wild</h1>
+        <p class="lead">A calm forest-themed static site showcasing animal variations</p>
+      </div>
+    </div>
+    <div class="chip">Forest • Nature palette • Rain animation</div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-card">
+      <h2>Welcome to the Green Realm</h2>
+      <p>Discover animal variations — from mountain dwellers to secretive forest critters. Hover any card to gently zoom and reveal details.</p>
+      <div style="display:flex;gap:10px;margin-top:16px;">
+        <button class="cta" onclick="document.getElementById('gallery').scrollIntoView({behavior:'smooth'})">Explore the animals</button>
+        <button class="cta" onclick="toggleRain()">Toggle rain</button>
+      </div>
+    </div>
+
+    <div class="mountains-wrap">
+      <!-- SVG for distant sky shapes -->
+      <svg class="mountains-svg" viewBox="0 0 1200 400" preserveAspectRatio="none" aria-hidden>
+        <defs>
+          <linearGradient id="skyGrad" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stop-color="#0b2b1f" stop-opacity="1" />
+            <stop offset="100%" stop-color="#082417" stop-opacity="1" />
+          </linearGradient>
+        </defs>
+        <rect x="0" y="0" width="1200" height="400" fill="url(#skyGrad)" />
+      </svg>
+
+      <!-- faux mountain layers built in CSS for parallax -->
+      <div class="mountain-layer mountain-1" style="z-index:0;"></div>
+      <div class="mountain-layer mountain-2" style="z-index:1;"></div>
+      <div class="trees" style="z-index:2"></div>
+
+      <!-- rain canvas -->
+      <canvas id="rainCanvas"></canvas>
+
+    </div>
+  </section>
+
+  <main>
+    <h3 id="gallery" style="margin:8px 0 12px 0">Animal variations</h3>
+    <div class="grid">
+      <!-- Each card uses CSS background images (placeholders). Replace the background-image inline with actual images. -->
+      <article class="card">
+        <div class="animal-img" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'600\' height=\'400\' ><rect width=\'100%\' height=\'100%\' fill=\'%230e2b1e\' /><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'22\' fill=\'%23dfeee0\'>Mountain Goat</text></svg>');"></div>
+        <div class="animal-title">Mountain Goat</div>
+        <div class="animal-sub">High-altitude grazer • Thick winter coat</div>
+      </article>
+
+      <article class="card">
+        <div class="animal-img" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'600\' height=\'400\' ><rect width=\'100%\' height=\'100%\' fill=\'%231a3b2d\' /><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'22\' fill=\'%23e9f5e6\'>Forest Deer</text></svg>');"></div>
+        <div class="animal-title">Forest Deer</div>
+        <div class="animal-sub">Silent browser • Dappled coat</div>
+      </article>
+
+      <article class="card">
+        <div class="animal-img" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'600\' height=\'400\' ><rect width=\'100%\' height=\'100%\' fill=\'%231b4433\' /><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'22\' fill=\'%23dff6e8\'>Clouded Leopard</text></svg>');"></div>
+        <div class="animal-title">Clouded Leopard</div>
+        <div class="animal-sub">Tree ambusher • Camouflaged coat</div>
+      </article>
+
+      <article class="card">
+        <div class="animal-img" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'600\' height=\'400\' ><rect width=\'100%\' height=\'100%\' fill=\'%230f2b1f\' /><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'22\' fill=\'%23ecf7ea\'>River Otter</text></svg>');"></div>
+        <div class="animal-title">River Otter</div>
+        <div class="animal-sub">Aquatic acrobat • Sleek fur</div>
+      </article>
+
+    </div>
+  </main>
+
+  <footer>
+    Built with nature colors ✨ — Replace placeholder SVGs with real photos for a richer look.
+  </footer>
+
+  <script>
+    // --------------------------
+    // Rain effect (canvas)
+    // --------------------------
+    const canvas = document.getElementById('rainCanvas');
+    const ctx = canvas.getContext('2d');
+    let drops = [];
+    let width, height, rainOn = true;
+
+    function resize(){
+      const rect = canvas.getBoundingClientRect();
+      width = canvas.width = rect.width * devicePixelRatio;
+      height = canvas.height = rect.height * devicePixelRatio;
+      ctx.scale(devicePixelRatio, devicePixelRatio);
+    }
+
+    function makeDrop(){
+      return {
+        x: Math.random()* (canvas.clientWidth),
+        y: -10 - Math.random()*200,
+        len: 8 + Math.random()*18,
+        speed: 2 + Math.random()*6,
+        sway: (Math.random()-0.5) * 0.8
+      }
+    }
+
+    function initDrops(count=140){
+      drops = [];
+      for(let i=0;i<count;i++) drops.push(makeDrop());
+    }
+
+    function draw(){
+      if(!rainOn){ctx.clearRect(0,0,canvas.width,canvas.height);return}
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      ctx.globalAlpha = 0.95;
+      for(let d of drops){
+        ctx.beginPath();
+        ctx.moveTo(d.x, d.y);
+        ctx.lineTo(d.x + d.sway*2, d.y + d.len);
+        ctx.lineWidth = 1.1;
+        ctx.strokeStyle = 'rgba(200,230,220,0.7)';
+        ctx.stroke();
+
+        d.x += d.sway * 0.9;
+        d.y += d.speed;
+        d.sway += (Math.random()-0.5) * 0.2;
+
+        if(d.y > canvas.clientHeight + 20){
+          // make a little splash
+          d.x = Math.random()*canvas.clientWidth;
+          d.y = -10 - Math.random()*200;
+          d.len = 8 + Math.random()*18;
+          d.speed = 2 + Math.random()*6;
+          d.sway = (Math.random()-0.5) * 0.8;
+        }
+      }
+      requestAnimationFrame(draw);
+    }
+
+    // parallax small effect on mouse move
+    document.addEventListener('mousemove', (e)=>{
+      const layers = document.querySelectorAll('.mountain-layer, .trees');
+      const cx = e.clientX / window.innerWidth - 0.5;
+      const cy = e.clientY / window.innerHeight - 0.5;
+      layers.forEach((el,i)=>{
+        const depth = (i+1) * 6;
+        el.style.transform = `translate(${cx*depth}px, ${Math.abs(i-1)*6 + cy*depth}px)`;
+      })
+    })
+
+    // toggle
+    function toggleRain(){
+      rainOn = !rainOn;
+      if(rainOn) initDrops(140);
+    }
+
+    // responsive init
+    window.addEventListener('resize', ()=>{resize();});
+    window.addEventListener('orientationchange', ()=>{resize();});
+
+    // init
+    resize(); initDrops(140); draw();
+
+    // small accessibility: keyboard toggle r
+    window.addEventListener('keydown', (e)=>{ if(e.key==='r' || e.key==='R') toggleRain(); })
+  </script>
+</body>
+</html>

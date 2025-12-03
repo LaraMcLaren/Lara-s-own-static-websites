@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Lara & Pepper — Lovers' Page</title>
+  <style>
+    /* ---- Base & gradient theme ---- */
+    :root{
+      --g1: linear-gradient(135deg,#ff9a9e 0%,#fad0c4 30%,#fbc2eb 60%,#a18cd1 100%);
+      --glass: rgba(255,255,255,0.08);
+      --glass-strong: rgba(255,255,255,0.12);
+      --accent: #ff4d6d;
+      --shadow: 0 10px 30px rgba(16,16,32,0.25);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      color: #111;
+    }
+    html,body{height:100%;margin:0}
+    body{
+      background: radial-gradient(circle at 10% 20%, rgba(255,255,255,0.05), transparent 10%), var(--g1);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      overflow:hidden;
+    }
+
+    /* ---- full page layout ---- */
+    .stage{
+      height:100vh;width:100vw;display:grid;grid-template-columns:420px 1fr;gap:30px;padding:48px;box-sizing:border-box;align-items:start;
+    }
+
+    /* Left panel — profile & date/time */
+    .panel{
+      backdrop-filter: blur(8px) saturate(1.1);
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      border-radius:20px;padding:28px;box-shadow:var(--shadow);height:calc(100vh - 96px);overflow:auto;border:1px solid rgba(255,255,255,0.08)
+    }
+    .title{font-size:22px;font-weight:700;margin:0 0 8px}
+    .subtitle{font-size:13px;opacity:0.85;margin-bottom:18px}
+    .names{display:flex;gap:12px;align-items:center}
+    .avatar{width:72px;height:72px;border-radius:16px;background:linear-gradient(135deg,#ffd1dc,#ff9a9e);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;color:#6f1942;box-shadow:0 6px 18px rgba(0,0,0,0.12)}
+    .names .meta{display:flex;flex-direction:column}
+
+    /* Date & time card */
+    .clock{margin-top:18px;padding:16px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));border:1px dashed rgba(255,255,255,0.04)}
+    .clock .big{font-size:28px;font-weight:700}
+    .clock .small{font-size:13px;opacity:0.9}
+
+    /* Right panel — main playground */
+    .main{
+      position:relative;height:calc(100vh - 96px);border-radius:20px;padding:36px;overflow:auto;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.04);box-shadow:var(--shadow)
+    }
+
+    /* Floating lovers silhouette background */
+    .bg-illustration{position:absolute;right:40px;bottom:10px;opacity:0.12;filter:blur(1px);transform:scale(1.05)}
+
+    /* Containers inside main: planner, weekend plans, visited places */
+    .grid{display:grid;grid-template-columns:1fr 380px;gap:26px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));border-radius:14px;padding:18px;border:1px solid rgba(255,255,255,0.035)}
+    .card h3{margin:0 0 10px;font-size:16px}
+
+    /* Planner timeline */
+    .timeline{height:320px;border-radius:10px;padding:12px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));overflow:auto}
+    .timeline ul{list-style:none;padding:0;margin:0}
+    .timeline li{padding:12px;border-radius:10px;margin-bottom:10px;background:linear-gradient(90deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));display:flex;align-items:center;gap:12px}
+    .dot{width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 2px 8px rgba(255,77,109,0.2)}
+
+    /* visited places */
+    .places{display:flex;flex-direction:column;gap:10px}
+    .place{display:flex;gap:12px;align-items:center;padding:10px;border-radius:10px}
+    .place .pin{width:40px;height:40px;border-radius:10px;background:rgba(0,0,0,0.04);display:flex;align-items:center;justify-content:center}
+
+    /* footer lover message */
+    .love-strip{position:absolute;left:50%;transform:translateX(-50%);bottom:14px;background:linear-gradient(90deg,#fff0 0,#fff6 50%,#fff0 100%);padding:10px 20px;border-radius:999px;display:flex;align-items:center;gap:12px;border:1px solid rgba(255,255,255,0.04)}
+
+    /* Hearts animation */
+    .hearts{position:fixed;left:0;top:0;pointer-events:none;width:100%;height:100%;z-index:2}
+    .heart{position:absolute;width:28px;height:28px;transform:translate(-50%,-50%) rotate(-20deg);opacity:0.9}
+    .heart svg{width:100%;height:100%;filter:drop-shadow(0 6px 12px rgba(0,0,0,0.12))}
+
+    @keyframes floatUp{
+      0%{transform:translateY(0) scale(0.9);opacity:0.95}
+      50%{transform:translateY(-30vh) scale(1.02);opacity:0.8}
+      100%{transform:translateY(-70vh) scale(0.98);opacity:0}
+    }
+
+    /* cupid animation */
+    .cupid{position:absolute;left:10%;top:6%;width:140px;height:140px;transform-origin:center;animation:float 6s ease-in-out infinite}
+    @keyframes float{0%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-18px) rotate(4deg)}100%{transform:translateY(0) rotate(-3deg)}}
+
+    /* subtle page entrance */
+    .fade-in{animation:fade 900ms both}
+    @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+    /* responsive */
+    @media (max-width:980px){.stage{grid-template-columns:1fr;padding:20px}.bg-illustration{display:none}.grid{grid-template-columns:1fr}}
+
+    /* small helpers */
+    .muted{opacity:0.78;font-size:13px}
+    .btn{padding:10px 14px;border-radius:10px;background:linear-gradient(90deg,#ff6b8a,#ffb4c8);border:none;color:white;font-weight:600;cursor:pointer}
+    input,textarea{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:10px;border-radius:8px;color:inherit;width:100%}
+  </style>
+</head>
+<body>
+  <div class="hearts" aria-hidden>
+    <!-- many hearts spawned by JS -->
+  </div>
+
+  <div class="stage">
+    <aside class="panel fade-in">
+      <div class="names">
+        <div class="avatar">LM</div>
+        <div class="meta">
+          <h1 class="title">Lara McLaren & Pepper Potts</h1>
+          <div class="subtitle">A lovers' hideaway — full page animations, cupid & dreamy gradients</div>
+        </div>
+      </div>
+
+      <div class="clock fade-in" style="margin-top:22px">
+        <div class="big" id="time">--:--</div>
+        <div class="small" id="date">Loading date</div>
+      </div>
+
+      <div style="margin-top:20px">
+        <div class="card">
+          <h3>Quick Notes</h3>
+          <p class="muted">Use the planner to add dates, weekend plans and visited places. This page is static — all data is stored in your browser only.</p>
+        </div>
+      </div>
+
+      <div style="margin-top:16px">
+        <div class="card">
+          <h3>Shared playlist</h3>
+          <p class="muted">"When you say nothing at all" queued ⌛</p>
+        </div>
+      </div>
+
+    </aside>
+
+    <main class="main fade-in">
+      <img class="cupid" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><g fill='%23fff'><path d='M46.5 11c-4.1 0-7 3.3-8.5 5.2-1.5-1.9-4.4-5.2-8.5-5.2-5.6 0-10.5 4.8-10.5 10.7 0 7.9 10.9 15.1 19 22.1 8.1-6.9 19-14.2 19-22.1C57 15.8 52.1 11 46.5 11z'/></g></svg>" alt="cupid">
+
+      <div class="grid">
+        <section class="card">
+          <h3>Dating timeline</h3>
+          <div class="timeline" id="timeline">
+            <ul id="events">
+              <!-- JS will populate events -->
+            </ul>
+          </div>
+
+          <div style="display:flex;gap:10px;margin-top:12px">
+            <input id="eventText" placeholder="Add special moment (e.g., Picnic at the pier)" />
+            <button class="btn" id="addEvent">Add</button>
+          </div>
+        </section>
+
+        <aside style="display:flex;flex-direction:column;gap:18px">
+          <div class="card">
+            <h3>Weekend plans</h3>
+            <div id="weekendPlan" class="muted">No plans yet — make magical ones!</div>
+            <div style="display:flex;gap:8px;margin-top:10px">
+              <input id="weekendText" placeholder="E.g., Beach at sunrise" />
+              <button class="btn" id="saveWeekend">Save</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Visited places</h3>
+            <div class="places" id="places">
+              <div class="place"><div class="pin">📍</div><div><strong>Paris — Seine sunset</strong><div class="muted">2024-11-02</div></div></div>
+              <div class="place"><div class="pin">📍</div><div><strong>Ooty — Hill station</strong><div class="muted">2025-02-14</div></div></div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:10px">
+              <input id="placeText" placeholder="Add a visited place (City - memory)" />
+              <button class="btn" id="addPlace">Add</button>
+            </div>
+          </div>
+
+        </aside>
+      </div>
+
+      <div style="height:18px"></div>
+
+      <div class="card">
+        <h3>Weekend getaway ideas</h3>
+        <div class="muted">Romantic escapes, day trips and cozy nights:</div>
+        <ul style="margin-top:12px">
+          <li>Sunrise hot-air balloon ride</li>
+          <li>Private beach picnic with fairy lights</li>
+          <li>Stargazing + rooftop dinner</li>
+        </ul>
+      </div>
+
+      <div class="love-strip">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M12 21s-8-5.4-8-10a4 4 0 018-3 4 4 0 018 3c0 4.6-8 10-8 10z" fill="#ff4d6d"/></svg>
+        <div><strong>Lara & Pepper</strong> — Together today, tomorrow, always.</div>
+      </div>
+
+      <!-- subtle lovers silhouette for ambience -->
+      <svg class="bg-illustration" width="480" height="380" viewBox="0 0 480 380" fill="none" xmlns="http://www.w3.org/2000/svg"><g fill="#000"><path d="M320 300c0-44-44-90-80-90s-80 46-80 90h160z" opacity="0.12"/><path d="M150 260c12-30 60-80 110-70 32 7 62 36 80 64 0 0-44 8-90-4-46-12-110 12-100 10z" opacity="0.12"/></g></svg>
+
+    </main>
+  </div>
+
+  <script>
+    // Utility: format
+    function pad(n){return n<10? '0'+n : n}
+
+    // Time & date display
+    function updateClock(){
+      const now = new Date();
+      const hh = pad(now.getHours());
+      const mm = pad(now.getMinutes());
+      const ss = pad(now.getSeconds());
+      document.getElementById('time').textContent = hh + ':' + mm + ':' + ss;
+      const day = now.toLocaleString(undefined,{weekday:'long'});
+      const date = now.toLocaleDateString();
+      document.getElementById('date').textContent = day + ' • ' + date;
+    }
+    setInterval(updateClock,1000); updateClock();
+
+    // Events (dating timeline) stored in localStorage
+    const EVENTS_KEY = 'lovers_events_v1';
+    const WEEKEND_KEY = 'lovers_weekend_v1';
+    const PLACES_KEY = 'lovers_places_v1';
+
+    function loadEvents(){
+      const raw = localStorage.getItem(EVENTS_KEY);
+      return raw ? JSON.parse(raw) : [
+        {title:'First message',date:'2024-06-20'},
+        {title:'Moonlight walk',date:'2024-12-01'}
+      ];
+    }
+    function saveEvents(list){ localStorage.setItem(EVENTS_KEY,JSON.stringify(list)); }
+
+    function renderEvents(){
+      const list = loadEvents();
+      const el = document.getElementById('events'); el.innerHTML='';
+      for(const e of list){
+        const li = document.createElement('li');
+        li.innerHTML = `<div class=dot></div><div><strong>${e.title}</strong><div class=muted>${e.date}</div></div>`;
+        el.appendChild(li);
+      }
+    }
+    renderEvents();
+
+    document.getElementById('addEvent').addEventListener('click',()=>{
+      const txt = document.getElementById('eventText').value.trim();
+      if(!txt) return alert('Please enter the moment.');
+      const d = new Date().toISOString().slice(0,10);
+      const list = loadEvents(); list.unshift({title:txt,date:d}); saveEvents(list); renderEvents(); document.getElementById('eventText').value='';
+    });
+
+    // Weekend plan
+    function loadWeekend(){ return localStorage.getItem(WEEKEND_KEY) || '' }
+    function saveWeekend(v){ localStorage.setItem(WEEKEND_KEY,v) }
+    function renderWeekend(){ document.getElementById('weekendPlan').textContent = loadWeekend() || 'No plans yet — make magical ones!'}
+    renderWeekend();
+    document.getElementById('saveWeekend').addEventListener('click',()=>{ const v=document.getElementById('weekendText').value.trim(); saveWeekend(v); renderWeekend(); document.getElementById('weekendText').value=''; })
+
+    // Places
+    function loadPlaces(){ const raw=localStorage.getItem(PLACES_KEY); return raw?JSON.parse(raw):[] }
+    function savePlaces(list){ localStorage.setItem(PLACES_KEY,JSON.stringify(list)) }
+    function renderPlaces(){ const root=document.getElementById('places'); root.innerHTML=''; const builtIn = [{name:'Paris — Seine sunset',date:'2024-11-02'},{name:'Ooty — Hill station',date:'2025-02-14'}]; const list = builtIn.concat(loadPlaces()); for(const p of list){ const row=document.createElement('div'); row.className='place'; row.innerHTML=`<div class='pin'>📍</div><div><strong>${p.name}</strong><div class='muted'>${p.date}</div></div>`; root.appendChild(row);} }
+    renderPlaces();
+
+    document.getElementById('addPlace').addEventListener('click',()=>{
+      const txt=document.getElementById('placeText').value.trim(); if(!txt) return alert('Enter place name.'); const d=new Date().toISOString().slice(0,10);
+      const list = loadPlaces(); list.unshift({name:txt,date:d}); savePlaces(list); renderPlaces(); document.getElementById('placeText').value='';
+    });
+
+    // Floating hearts generator
+    const heartsContainer = document.querySelector('.hearts');
+    function spawnHeart(){
+      const n = document.createElement('div'); n.className='heart';
+      const left = Math.random()*100; const size = 18 + Math.random()*36; n.style.left = left + '%'; n.style.top = (70 + Math.random()*30) + '%'; n.style.width = size + 'px'; n.style.height = size + 'px'; n.style.opacity = 0.95;
+      n.style.animation = `floatUp ${8 + Math.random()*6}s cubic-bezier(.2,.8,.2,1) forwards`;
+      const hue = Math.round(330 + Math.random()*20);
+      const svg = `<svg viewBox="0 0 24 24" xmlns='http://www.w3.org/2000/svg'><path fill='hsl(${hue} 90% 65%)' d='M12 21s-8-5.4-8-10a4 4 0 018-3 4 4 0 018 3c0 4.6-8 10-8 10z'/></svg>`;
+      n.innerHTML = svg;
+      heartsContainer.appendChild(n);
+      setTimeout(()=>{ n.remove(); }, 14000);
+    }
+    // spawn a few initially and then every 900ms
+    for(let i=0;i<8;i++) setTimeout(spawnHeart, i*300);
+    setInterval(spawnHeart,900);
+
+    // small accessibility: allow Enter to add
+    document.getElementById('eventText').addEventListener('keydown',(e)=>{if(e.key==='Enter') document.getElementById('addEvent').click()});
+    document.getElementById('placeText').addEventListener('keydown',(e)=>{if(e.key==='Enter') document.getElementById('addPlace').click()});
+    document.getElementById('weekendText').addEventListener('keydown',(e)=>{if(e.key==='Enter') document.getElementById('saveWeekend').click()});
+
+  </script>
+</body>
+</html>

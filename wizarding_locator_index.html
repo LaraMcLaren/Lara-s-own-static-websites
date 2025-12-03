@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>The Wizarding Locator — Magical Map</title>
+  <style>
+    /* Reset */
+    :root{
+      --bg1:#051028; /* deep navy */
+      --bg2:#0b1740; /* midnight */
+      --gold:#d9b44a;
+      --soft:#e9f0ff;
+      --glass: rgba(255,255,255,0.04);
+      --card: rgba(10,12,20,0.6);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;color:var(--soft);background:linear-gradient(180deg,var(--bg1),var(--bg2));-webkit-font-smoothing:antialiased}
+
+    /* Background enchanted map layer */
+    .map-wrap{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+    canvas#mapCanvas{width:100%;height:100%;display:block}
+
+    /* Fog and sparkles */
+    .fog{position:fixed;inset:0;z-index:1;background:radial-gradient(ellipse at 20% 10%, rgba(255,255,255,0.03), transparent 10%), radial-gradient(ellipse at 80% 90%, rgba(200,200,255,0.02), transparent 15%)}
+    .sparkles{position:fixed;inset:0;z-index:2;pointer-events:none}
+    .sparkles span{position:absolute;width:6px;height:6px;border-radius:50%;opacity:0.9;mix-blend-mode:screen;animation:twinkle 4s infinite}
+    @keyframes twinkle{0%{transform:translateY(0) scale(0.6);opacity:0.2}50%{transform:translateY(-10px) scale(1.1);opacity:1}100%{transform:translateY(0) scale(0.6);opacity:0.2}}
+
+    header{position:relative;z-index:5;padding:28px 48px;display:flex;align-items:center;justify-content:space-between}
+    .brand{display:flex;align-items:center;gap:18px}
+    .castle{width:110px;height:60px;filter:drop-shadow(0 6px 18px rgba(0,0,0,0.6));opacity:0.95}
+    .title{font-size:clamp(20px,3vw,34px);font-weight:700;display:flex;flex-direction:column}
+    .title .main{display:flex;align-items:center;gap:10px}
+    .title .sub{font-weight:400;font-size:14px;color:rgba(233,240,255,0.75)}
+
+    /* Hero */
+    .hero{position:relative;z-index:6;padding:40px 48px 10vh;display:flex;gap:40px;align-items:flex-start}
+    .hero-left{flex:1;max-width:900px}
+    .hero-right{width:380px}
+
+    .hero h1{font-size:clamp(34px,6vw,72px);margin:0;line-height:0.95;letter-spacing:-1px;display:flex;align-items:center;gap:12px}
+    .glow-text{position:relative;color:transparent;background:linear-gradient(90deg,#f8f0ff,#fff);-webkit-background-clip:text;background-clip:text}
+    /* Wand tracing SVG stroke animation */
+    .wand-trace{width:100%;height:1.2em}
+    .trace-path{stroke:var(--gold);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;fill:none;stroke-dasharray:1000;stroke-dashoffset:1000;animation:draw 3s forwards ease-out}
+    @keyframes draw{to{stroke-dashoffset:0}} 
+
+    .panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:14px;padding:18px;backdrop-filter:blur(6px);box-shadow:0 10px 30px rgba(2,6,20,0.6);}
+
+    /* Location panel */
+    .locator{display:flex;flex-direction:column;gap:12px}
+    .locator input{width:100%;padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--soft);outline:none}
+    .locator .row{display:flex;gap:8px}
+    .btn{padding:12px 14px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--gold),#f2e59c);color:#081223;font-weight:700;cursor:pointer}
+
+    .result{margin-top:12px;padding:12px;border-radius:10px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));display:flex;align-items:center;gap:12px}
+    .house-pill{padding:8px 12px;border-radius:999px;background:rgba(0,0,0,0.35);font-weight:700}
+
+    /* Floating magical objects */
+    .float-obj{position:absolute;z-index:7;will-change:transform;transition:transform 0.25s ease}
+    .float-obj svg{width:56px;height:56px;display:block}
+    .float-obj:hover{transform:translateY(-8px) rotate(-6deg) scale(1.06);filter:drop-shadow(0 8px 26px rgba(0,0,0,0.6));}
+
+    /* Footer */
+    footer{position:relative;z-index:6;padding:28px 48px;color:rgba(233,240,255,0.7);display:flex;justify-content:space-between;align-items:center}
+    .crest{width:64px;height:64px;border-radius:999px;background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));display:flex;align-items:center;justify-content:center}
+
+    /* Responsive */
+    @media (max-width:880px){
+      .hero{flex-direction:column}
+      .hero-right{width:100%}
+      header{padding:18px}
+      .hero{padding:20px}
+    }
+  </style>
+</head>
+<body>
+  <div class="map-wrap">
+    <canvas id="mapCanvas"></canvas>
+  </div>
+  <div class="fog"></div>
+  <div class="sparkles" id="sparkles"></div>
+
+  <header>
+    <div class="brand">
+      <!-- stylized castle silhouette (pure SVG) -->
+      <svg class="castle" viewBox="0 0 220 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <g fill="none" stroke="none">
+          <rect width="220" height="120" rx="8" fill="rgba(0,0,0,0.15)"/>
+          <path d="M22 88 L40 58 L40 34 L56 22 L72 34 L72 58 L90 88 L140 62 L160 88 L190 48 L206 62 L206 88 Z" fill="rgba(217,180,74,0.12)"/>
+          <path d="M36 58 L36 36 L52 24 L68 36 L68 58" fill="rgba(217,180,74,0.22)"/>
+        </g>
+      </svg>
+      <div class="title">
+        <div class="main">The Wizarding Locator</div>
+        <div class="sub">Discover Your Magical Location in the Wizarding World</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer" title="Toggle music">
+        <input id="musicToggle" type="checkbox" style="accent-color:var(--gold)"/>
+        <span style="font-size:13px;color:rgba(233,240,255,0.8)">Hedwig theme</span>
+      </label>
+      <button class="btn" id="helpBtn">Help</button>
+    </div>
+  </header>
+
+  <main class="hero">
+    <section class="hero-left">
+      <div class="panel">
+        <h1><span class="glow-text">⚡ The Wizarding Locator</span></h1>
+        <!-- Wand tracing - SVG text with path -->
+        <svg class="wand-trace" viewBox="0 0 1000 120" preserveAspectRatio="xMinYMid meet" aria-hidden="true">
+          <path class="trace-path" d="M20 80 Q200 10 400 78 T980 78" />
+          <text x="20" y="85" font-size="48" fill="rgba(245,245,255,0.95)" style="font-weight:700">Discover Your Magical Location in the Wizarding World.</text>
+        </svg>
+
+        <p style="opacity:0.9;line-height:1.6">Enter an address or magical name (Diagon Alley, Hogsmeade, Forbidden Forest) or coordinates (lat,long) and watch the Marauder-style map reveal the location with golden trails, a house badge, and a brief lore snippet.</p>
+
+        <div class="locator">
+          <input id="locInput" placeholder="Enter location name or coordinates (e.g. 51.5074,-0.1278)" />
+          <div class="row">
+            <button class="btn" id="locBtn">Locate</button>
+            <button class="btn" id="randBtn">Surprise Me</button>
+          </div>
+
+          <div class="result" id="resultBox" style="display:none">
+            <div class="house-pill" id="placePill">--</div>
+            <div id="placeText">Detected location will appear here.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="hero-right">
+      <div class="panel" style="height:420px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative">
+        <div style="font-weight:800;font-size:18px;margin-bottom:8px">Marauder's Map</div>
+        <div id="miniMap" style="width:320px;height:300px;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.04);box-shadow:inset 0 6px 30px rgba(0,0,0,0.6);background:linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.45));display:flex;align-items:center;justify-content:center">
+          <svg id="mapSVG" width="300" height="260" viewBox="0 0 600 520"></svg>
+        </div>
+        <div style="font-size:12px;color:rgba(233,240,255,0.6);margin-top:10px">Click a golden trail to reveal more.</div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Floating magical objects (inline SVGs for safety) -->
+  <div class="float-obj" style="left:12%;top:35%">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#d9b44a" d="M12 2L13.2 6.2L18 7L14 10L15.2 14.2L12 12L8.8 14.2L10 10L6 7L10.8 6.2z"/></svg>
+  </div>
+  <div class="float-obj" style="left:78%;top:18%">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#d9b44a"/></svg>
+  </div>
+  <div class="float-obj" style="left:66%;top:60%">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="6" width="16" height="12" rx="2" fill="#7d5a20"/></svg>
+  </div>
+  <div class="float-obj" style="left:8%;top:78%">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#b32b2b" d="M2 12 L22 6 L2 0 Z"/></svg>
+  </div>
+
+  <footer>
+    <div>“Mischief Managed ✨”</div>
+    <div class="crest" title="School crest">
+      <svg width="42" height="42" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="10" fill="rgba(217,180,74,0.12)"/>
+        <text x="12" y="16" font-size="9" text-anchor="middle" fill="rgba(233,240,255,0.9)" style="font-weight:700">W</text>
+      </svg>
+    </div>
+  </footer>
+
+  <!-- Hidden audio (user should replace source with a local file or hosted file) -->
+  <audio id="bgAudio" loop crossorigin="anonymous">
+    <!-- Replace src with your own licensed audio. This placeholder won't play without a valid file. -->
+    <source src="hedwig-theme.mp3" type="audio/mpeg" />
+  </audio>
+
+  <script>
+    // ====== Sparkles generation ======
+    const sparkWrap = document.getElementById('sparkles');
+    for(let i=0;i<20;i++){
+      const s = document.createElement('span');
+      s.style.left = Math.random()*100+'%';
+      s.style.top = Math.random()*100+'%';
+      const size = (4+Math.random()*8)+'px';
+      s.style.width = size;
+      s.style.height = size;
+      s.style.animationDelay = Math.random()*3+'s';
+      s.style.opacity = 0.8*Math.random();
+      s.style.background = 'radial-gradient(circle, rgba(217,180,74,0.9), rgba(255,255,255,0.2))';
+      sparkWrap.appendChild(s);
+    }
+
+    // ====== Canvas: moving magical map & golden trails ======
+    const canvas = document.getElementById('mapCanvas');
+    const ctx = canvas.getContext('2d');
+    function resize(){
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.floor(innerWidth * dpr);
+      canvas.height = Math.floor(innerHeight * dpr);
+      canvas.style.width = innerWidth+'px';
+      canvas.style.height = innerHeight+'px';
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+    }
+    resize();
+    addEventListener('resize', resize);
+
+    // Draw subtle parchment texture and moving "ink" lines
+    let t0 = performance.now();
+    const trails = []; // active trail lines
+    function draw(now){
+      const dt = (now - t0)/1000 || 0;
+      t0 = now;
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+
+      // parchment background wash
+      const g = ctx.createLinearGradient(0,0,0,innerHeight);
+      g.addColorStop(0, 'rgba(5,10,28,0.24)');
+      g.addColorStop(1, 'rgba(11,23,64,0.36)');
+      ctx.fillStyle = g;
+      ctx.fillRect(0,0,innerWidth,innerHeight);
+
+      // drifting ink lines (map topography)
+      ctx.save();
+      ctx.globalAlpha = 0.15;
+      for(let i=0;i<30;i++){
+        ctx.beginPath();
+        const y = (i/30)*innerHeight + Math.sin((now/1000)+(i))*12;
+        ctx.moveTo(0,y);
+        for(let x=0;x<innerWidth;x+=80){
+          ctx.lineTo(x, y + Math.sin((x/80)+now/2000+i)*20);
+        }
+        ctx.strokeStyle = '#a08b52';
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      // update & draw golden trails
+      for(let i=trails.length-1;i>=0;i--){
+        const tr = trails[i];
+        tr.age += dt;
+        if(!tr.points || tr.points.length===0) { trails.splice(i,1); continue; }
+        // draw path progressively
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(tr.points[0].x, tr.points[0].y);
+        for(let j=1;j<tr.points.length;j++) ctx.lineTo(tr.points[j].x, tr.points[j].y);
+        ctx.strokeStyle = 'rgba(217,180,74,'+Math.max(0,1 - tr.age/3)+')';
+        ctx.lineWidth = 2 + 2*Math.sin(tr.age*4);
+        ctx.shadowBlur = 18;
+        ctx.shadowColor = '#ffd880';
+        ctx.stroke();
+        ctx.restore();
+        if(tr.age>3) trails.splice(i,1);
+      }
+
+      requestAnimationFrame(draw);
+    }
+    requestAnimationFrame(draw);
+
+    // ====== Mini-map SVG trails interactivity ======
+    const mapSVG = document.getElementById('mapSVG');
+    const places = [
+      {name:'Diagon Alley',coords:[200,120],desc:'A bustling street of shops for wizards.',house:'Universal'},
+      {name:'Hogsmeade',coords:[420,90],desc:'The only all-wizarding village in Britain.',house:'Universal'},
+      {name:'Forbidden Forest',coords:[80,350],desc:'Dark, mysterious forest full of creatures.',house:'Danger'},
+      {name:'Hogwarts Castle',coords:[300,200],desc:'The grand castle of Hogwarts School.',house:'Gryffindor'},
+      {name:'Ministry of Magic',coords:[500,350],desc:'Center of magical government.',house:'Order'}
+    ];
+
+    function renderMiniMap(){
+      // clear safely
+      while(mapSVG.firstChild) mapSVG.removeChild(mapSVG.firstChild);
+
+      // parchment-style background
+      const bg = document.createElementNS('http://www.w3.org/2000/svg','rect');
+      bg.setAttribute('x',0);bg.setAttribute('y',0);bg.setAttribute('width',600);bg.setAttribute('height',520);bg.setAttribute('fill','rgba(10,12,20,0.65)');mapSVG.appendChild(bg);
+
+      // trails (invisible until triggered)
+      places.forEach((p,i)=>{
+        const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+        const cx = p.coords[0], cy = p.coords[1];
+        const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+        circle.setAttribute('cx',cx);circle.setAttribute('cy',cy);circle.setAttribute('r',8);circle.setAttribute('fill','rgba(217,180,74,0.14)');circle.setAttribute('stroke','rgba(217,180,74,0.6)');circle.setAttribute('stroke-width',1.5);
+        circle.style.cursor='pointer';
+        circle.addEventListener('click',()=>{showPlace(i);});
+        g.appendChild(circle);
+
+        const label = document.createElementNS('http://www.w3.org/2000/svg','text');
+        label.setAttribute('x',cx+14);label.setAttribute('y',cy+6);label.setAttribute('font-size',12);label.setAttribute('fill','rgba(233,240,255,0.8)');label.textContent=p.name;
+        g.appendChild(label);
+
+        mapSVG.appendChild(g);
+      });
+    }
+    renderMiniMap();
+
+    function showPlace(idx){
+      const p = places[idx];
+      if(!p) return;
+      // create a golden trail on canvas going from random origin to place
+      const start = {x: Math.random()*innerWidth, y: Math.random()*innerHeight};
+      const steps = [];
+      for(let i=0;i<20;i++){
+        steps.push({x: start.x + (p.coords[0]-300)*(i/20) + (Math.random()-0.5)*60, y: start.y + (p.coords[1]-260)*(i/20) + (Math.random()-0.5)*60});
+      }
+      trails.push({points:steps,age:0});
+
+      // update result box
+      const res = document.getElementById('resultBox');if(res) res.style.display='flex';
+      const pill = document.getElementById('placePill'); if(pill) pill.textContent = p.name;
+      const ptext = document.getElementById('placeText'); if(ptext) ptext.textContent = p.desc + ' — House hint: ' + p.house;
+
+      // simple pulsing pin on SVG
+      const pin = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      pin.setAttribute('cx',p.coords[0]);pin.setAttribute('cy',p.coords[1]);pin.setAttribute('r',16);pin.setAttribute('fill','none');pin.setAttribute('stroke','rgba(217,180,74,0.9)');pin.setAttribute('stroke-width',2);
+      pin.classList.add('pulse');
+      mapSVG.appendChild(pin);
+      setTimeout(()=>{ if(pin.parentNode) mapSVG.removeChild(pin); },2200);
+    }
+
+    // ====== Locate logic (basic fuzzy matching) ======
+    const locBtn = document.getElementById('locBtn');
+    const randBtn = document.getElementById('randBtn');
+    const locInput = document.getElementById('locInput');
+
+    function locateText(q){
+      q = (q||'').trim().toLowerCase();
+      if(!q){
+        // nothing entered -> random
+        const i = Math.floor(Math.random()*places.length); showPlace(i); return;
+      }
+      // coordinates? (lat,lon)
+      const coordMatch = q.match(/(-?\d+(?:\.\d+)?),\s*(-?\d+(?:\.\d+)?)/);
+      if(coordMatch){
+        // map to nearest place (simple deterministic heuristic)
+        const lat = parseFloat(coordMatch[1]);
+        const lon = parseFloat(coordMatch[2]);
+        const idx = Math.abs(Math.floor((lon*10) % places.length));
+        showPlace(idx);
+        return;
+      }
+      // fuzzy name match
+      let best = -1,score=-1;
+      places.forEach((p,i)=>{
+        const name = p.name.toLowerCase();
+        let s=0; if(name.includes(q)) s+=10; // high weight
+        q.split(' ').forEach(tok=>{ if(tok && name.includes(tok)) s+=3 });
+        if(s>score){score=s;best=i}
+      });
+      if(best>=0 && score>0) showPlace(best);
+      else{ // fallback
+        const i = Math.floor(Math.random()*places.length); showPlace(i);
+      }
+    }
+
+    if(locBtn) locBtn.addEventListener('click', ()=>{ locateText(locInput && locInput.value); });
+    if(locInput) locInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') locateText(locInput.value); });
+    if(randBtn) randBtn.addEventListener('click', ()=>{ const i=Math.floor(Math.random()*places.length); showPlace(i); });
+
+    // ====== Help button ======
+    const helpBtn = document.getElementById('helpBtn');
+    if(helpBtn) helpBtn.addEventListener('click', ()=>{
+      alert("Try names like 'Diagon Alley', 'Hogsmeade', or coordinates such as '51.5,-0.12'. Click map pins to reveal lore. Replace hedwig-theme.mp3 with your own audio file to enable background music.");
+    });
+
+    // ====== audio toggle ======
+    const bgAudio = document.getElementById('bgAudio');
+    const musicToggle = document.getElementById('musicToggle');
+    if(musicToggle){
+      musicToggle.addEventListener('change', (e)=>{
+        if(e.target.checked){
+          try{
+            const p = bgAudio && bgAudio.play();
+            if(p && typeof p.catch === 'function') p.catch(()=>{ alert('Audio play blocked by browser — interact with the page (click) to allow music.'); });
+          }catch(err){ console.warn('Audio play failed',err); }
+        } else { if(bgAudio){ bgAudio.pause(); bgAudio.currentTime = 0; } }
+      });
+    }
+
+    // initial floating small animations for objects
+    document.querySelectorAll('.float-obj').forEach((el,i)=>{
+      let t = Math.random()*100;
+      function ani(){
+        t+=0.01;
+        el.style.transform = 'translateY('+(Math.sin(t*2 + i)*8)+'px) rotate('+ (Math.sin(t + i)*6) +'deg)';
+        requestAnimationFrame(ani);
+      }
+      ani();
+    });
+
+    // small accessibility: focus input
+    if(locInput) locInput.focus();
+  </script>
+</body>
+</html>

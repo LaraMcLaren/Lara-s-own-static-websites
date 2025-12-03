@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pirates of the Indian Ocean — Landing</title>
+  <meta name="description" content="A short single-file static site with smooth animations and realistic RGB gradients inspired by the Indian Ocean." />
+  <style>
+    /* --------- Color palette (realistic RGB) --------- */
+    :root{
+      --deep-sea: rgb(3,37,60);
+      --mid-sea: rgb(6,82,118);
+      --sea-foam: rgb(0,176,155);
+      --sunset-1: rgb(255,159,67);
+      --sunset-2: rgb(255,215,80);
+      --sand: rgb(222,186,136);
+      --accent: rgb(236,200,86);
+      --glass: rgba(255,255,255,0.06);
+      --txt: rgba(255,255,255,0.96);
+      --muted: rgba(255,255,255,0.80);
+    }
+
+    /* --------- Reset & base --------- */
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial}
+    body{background: linear-gradient(180deg,var(--deep-sea) 0%, var(--mid-sea) 40%, rgba(8,45,70,0.9) 60%);color:var(--txt);-webkit-font-smoothing:antialiased}
+
+    a{color:inherit;text-decoration:none}
+    .container{max-width:1100px;margin:0 auto;padding:32px}
+
+    /* --------- Hero --------- */
+    .hero{min-height:80vh;display:grid;align-items:center;padding:48px 20px;position:relative;overflow:hidden}
+    .hero-grid{display:grid;grid-template-columns:1fr 440px;gap:36px;align-items:center}
+    .title{font-size:clamp(28px,6vw,56px);line-height:1.02;margin:0 0 12px;font-weight:700;letter-spacing:-0.02em}
+    .lead{color:var(--muted);font-size:18px;margin:0 0 22px}
+
+    .cta{display:inline-flex;gap:12px;align-items:center;padding:12px 18px;border-radius:12px;background:linear-gradient(90deg,var(--sunset-1),var(--sunset-2));color:#062b3a;font-weight:700;border:none;cursor:pointer;box-shadow:0 8px 30px rgba(0,0,0,0.45);transform:translateY(0);transition:transform .25s ease, box-shadow .25s ease}
+    .cta:active{transform:translateY(2px)}
+
+    /* --------- Card (ship info) --------- */
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));backdrop-filter:blur(6px);border-radius:18px;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,0.45)}
+    .ship-visual{height:320px;display:flex;align-items:center;justify-content:center}
+
+    /* --------- Waves (SVG) animation --------- */
+    .waves{position:absolute;left:0;right:0;bottom:0;height:30vh;pointer-events:none}
+    .wave{opacity:0.85}
+    @keyframes floatX{from{transform:translateX(0)}to{transform:translateX(-35%)}}
+    @keyframes floatShip{0%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-10px) rotate(1deg)}100%{transform:translateY(0) rotate(-1deg)}}
+
+    .wave.wave-1{animation:floatX 14s linear infinite}
+    .wave.wave-2{animation:floatX 18s linear infinite}
+
+    /* --------- Ship bobbing --------- */
+    .ship{width:240px;max-width:60%;filter:drop-shadow(0 8px 40px rgba(0,0,0,0.6));animation:floatShip 6s ease-in-out infinite}
+
+    /* --------- Section cards --------- */
+    section{padding:64px 20px}
+    .grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
+    .tile{background:linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);transform:translateY(18px);opacity:0;transition:all .7s cubic-bezier(.2,.9,.23,1)}
+    .tile.visible{transform:none;opacity:1}
+
+    /* --------- Parallax stars & sky --------- */
+    .sky{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+    .star{position:absolute;width:2px;height:2px;background:rgba(255,255,255,0.9);border-radius:50%;opacity:0.9;filter:blur(0.2px);animation:twinkle 4s infinite}
+    @keyframes twinkle{0%,100%{opacity:.2}50%{opacity:1}}
+
+    /* --------- Footer --------- */
+    footer{padding:28px 20px;text-align:center;color:var(--muted);font-size:14px}
+
+    /* --------- Typing text animation --------- */
+    .type{display:inline-block;border-right:2px solid rgba(255,255,255,0.85);padding-right:6px;white-space:nowrap;overflow:hidden}
+    @keyframes type {from{width:0}to{width:100%}}
+
+    /* --------- Responsive --------- */
+    @media (max-width:880px){.hero-grid{grid-template-columns:1fr;}.ship{width:60%}}
+
+  </style>
+</head>
+<body>
+  <div class="sky" aria-hidden="true">
+    <!-- generate subtle stars with JS -->
+  </div>
+
+  <main class="hero">
+    <div class="container hero-grid" style="z-index:2">
+      <div>
+        <h1 class="title">Pirates of the Indian Ocean</h1>
+        <p class="lead">A visual landing page inspired by dusk over the Indian Ocean — swirling gradients, rolling waves and a lone pirate ship on the horizon.</p>
+        <div style="display:flex;gap:12px;align-items:center">
+          <button class="cta" id="exploreBtn">Explore the Fleet</button>
+          <a href="#stories" style="color:var(--muted);font-weight:600">View stories ↓</a>
+        </div>
+
+        <div style="margin-top:28px;color:var(--muted);font-size:14px;max-width:56ch">
+          <span class="type" id="typeLine" style="width:0;display:inline-block"></span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="ship-visual">
+          <!-- simple ship SVG -->
+          <svg class="ship" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pirate ship">
+            <defs>
+              <linearGradient id="sailGrad" x1="0" x2="1">
+                <stop offset="0" stop-color="rgb(255,159,67)" />
+                <stop offset="1" stop-color="rgb(255,215,80)" />
+              </linearGradient>
+              <linearGradient id="hullGrad" x1="0" x2="1">
+                <stop offset="0" stop-color="#2b3a45" />
+                <stop offset="1" stop-color="#091621" />
+              </linearGradient>
+            </defs>
+            <g transform="translate(0,8)">
+              <ellipse cx="100" cy="96" rx="80" ry="12" fill="rgba(0,0,0,0.35)" />
+              <path d="M20 80 q80 -40 160 0 l-18 8 q-65 -20 -124 0z" fill="url(#hullGrad)" />
+              <rect x="88" y="18" width="8" height="38" fill="#4a2a1f" rx="1" />
+              <path d="M96 20 q28 8 48 0 q-12 20 -48 20z" fill="url(#sailGrad)" transform="translate(0,0)" />
+              <g transform="translate(58,24)">
+                <circle cx="0" cy="0" r="6" fill="#111" />
+              </g>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- waves SVG placed at bottom -->
+    <div class="waves" aria-hidden="true">
+      <svg class="wave wave-1" viewBox="0 0 1440 320" preserveAspectRatio="none" style="width:200%;height:100%;position:absolute;bottom:0;left:-50%;">
+        <defs>
+          <linearGradient id="g1" x1="0" x2="1">
+            <stop offset="0" stop-color="rgba(0,176,155,0.18)" />
+            <stop offset="1" stop-color="rgba(6,82,118,0.16)" />
+          </linearGradient>
+        </defs>
+        <path fill="url(#g1)" d="M0,160 C240,200 360,120 720,160 C1080,200 1200,120 1440,160 L1440 320 L0 320 Z"></path>
+      </svg>
+
+      <svg class="wave wave-2" viewBox="0 0 1440 320" preserveAspectRatio="none" style="width:200%;height:100%;position:absolute;bottom:0;left:-20%;opacity:0.9;">
+        <defs>
+          <linearGradient id="g2" x1="0" x2="1">
+            <stop offset="0" stop-color="rgba(3,37,60,0.12)" />
+            <stop offset="1" stop-color="rgba(0,176,155,0.08)" />
+          </linearGradient>
+        </defs>
+        <path fill="url(#g2)" d="M0,200 C320,120 540,260 900,200 C1180,140 1300,200 1440,180 L1440 320 L0 320 Z"></path>
+      </svg>
+    </div>
+  </main>
+
+  <section id="stories">
+    <div class="container">
+      <h2 style="margin:0 0 18px">Tales from the Ocean</h2>
+      <p style="margin:0 0 28px;color:var(--muted)">Short stories and crew profiles — each tile appears softly as you scroll.</p>
+      <div class="grid-3">
+        <article class="tile">
+          <h3 style="margin:0 0 8px">The Dusk Raider</h3>
+          <p style="margin:0;color:var(--muted)">A swift cutter that moves like a shadow between islands at dusk, favored by captains who prefer stealth.</p>
+        </article>
+        <article class="tile">
+          <h3 style="margin:0 0 8px">The Coral Brig</h3>
+          <p style="margin:0;color:var(--muted)">Tracked shipwrecks and coral mazes — her crew knows the reefs better than the maps.</p>
+        </article>
+        <article class="tile">
+          <h3 style="margin:0 0 8px">The Golden Krait</h3>
+          <p style="margin:0;color:var(--muted)">Looted spices and silks glint under moonlight; stories of bargains and betrayals follow her.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">© <strong>Pirates of the Indian Ocean</strong> — crafted with RGB gradients and gentle motion. Built single-file for quick use.</div>
+  </footer>
+
+  <script>
+    // Typing line
+    const typeLine = document.getElementById('typeLine');
+    const msg = 'Where waves keep secrets and horizons hide legends...';
+    let i = 0;
+    function type(){
+      if(i<=msg.length){
+        typeLine.textContent = msg.slice(0,i);
+        typeLine.style.width = (i+1)+'ch';
+        i++;setTimeout(type,30);
+      } else { setTimeout(()=>{i=0;type()},4000) }
+    }
+    type();
+
+    // stars generation
+    const sky = document.querySelector('.sky');
+    for(let s=0;s<30;s++){
+      const star = document.createElement('div');
+      star.className='star';
+      star.style.left = Math.random()*100+'%';
+      star.style.top = Math.random()*40+'%';
+      star.style.width = (Math.random()*2 + 1) + 'px';
+      star.style.height = star.style.width;
+      star.style.opacity = (Math.random()*0.8+0.2).toFixed(2);
+      star.style.animationDelay = (Math.random()*4)+'s';
+      sky.appendChild(star);
+    }
+
+    // intersection observer to reveal tiles
+    const tiles = document.querySelectorAll('.tile');
+    const obs = new IntersectionObserver(entries =>{
+      entries.forEach(entry =>{
+        if(entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    },{threshold:.12});
+    tiles.forEach(t=>obs.observe(t));
+
+    // explore button smooth scroll
+    document.getElementById('exploreBtn').addEventListener('click',()=>{
+      document.getElementById('stories').scrollIntoView({behavior:'smooth'});
+    });
+  </script>
+</body>
+</html>
