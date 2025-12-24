@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Indira Kumar | UX/UI & Frontend</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#0b0b12;
+  --card:#14141f;
+  --accent:#8b5cf6;
+  --accent2:#22d3ee;
+  --text:#f5f5f5;
+  --muted:#a1a1aa;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Poppins',sans-serif;
+  color:var(--text);
+  background:linear-gradient(-45deg,#0b0b12,#120c2b,#0b0b12);
+  background-size:400% 400%;
+  animation:bgmove 15s ease infinite;
+}
+
+@keyframes bgmove{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+
+/* container */
+.container{
+  max-width:1100px;
+  margin:auto;
+  padding:80px 20px;
+}
+
+/* hero */
+.hero{
+  text-align:center;
+  margin-bottom:80px;
+  animation:fadeUp 1.2s ease both;
+}
+.hero h1{
+  font-size:3.2rem;
+}
+.hero span{
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;
+  color:transparent;
+}
+.hero p{
+  margin-top:10px;
+  color:var(--muted);
+}
+.hero a{
+  display:inline-block;
+  margin:20px 10px;
+  padding:12px 26px;
+  border-radius:40px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;
+  text-decoration:none;
+  transition:.4s;
+}
+.hero a:hover{
+  transform:scale(1.08);
+  box-shadow:0 15px 40px rgba(139,92,246,.6);
+}
+
+/* sections */
+section{
+  margin-bottom:70px;
+  opacity:0;
+  transform:translateY(40px);
+  transition:1s ease;
+}
+section.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* card */
+.card{
+  background:rgba(20,20,31,.85);
+  backdrop-filter:blur(15px);
+  padding:30px;
+  border-radius:22px;
+  box-shadow:0 20px 50px rgba(0,0,0,.6);
+  transition:.4s;
+}
+.card:hover{
+  transform:translateY(-8px) rotateX(2deg);
+}
+
+/* headings */
+h2{
+  font-size:1.9rem;
+  margin-bottom:20px;
+  position:relative;
+}
+h2::after{
+  content:'';
+  width:60px;
+  height:4px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  position:absolute;
+  left:0;
+  bottom:-8px;
+}
+
+/* grid */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:20px;
+}
+
+/* skill */
+.skill{
+  background:#1c1c2b;
+  padding:14px;
+  border-radius:14px;
+  text-align:center;
+  transition:.3s;
+}
+.skill:hover{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  transform:translateY(-6px);
+}
+
+/* project */
+.project{
+  padding:16px;
+  border-radius:16px;
+  background:#1a1a27;
+  transition:.4s;
+}
+.project:hover{
+  transform:scale(1.07);
+  background:linear-gradient(135deg,#7c3aed,#2563eb);
+}
+
+/* footer */
+footer{
+  text-align:center;
+  color:var(--muted);
+  margin-top:60px;
+}
+
+/* animations */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(30px)}
+  to{opacity:1;transform:translateY(0)}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="hero">
+    <h1>Indira Kumar <span>Panneerselvam</span></h1>
+    <p>UX/UI Designer & Frontend Developer</p>
+    <a href="mailto:disney.indhru@gmail.com">Contact Me</a>
+    <a href="https://www.behance.net/indirakumar369" target="_blank">Behance</a>
+  </div>
+
+  <section class="card">
+    <h2>About Me</h2>
+    <p>
+      Passionate UX/UI Designer crafting premium digital experiences.
+      Strong eye for aesthetics, animation, and user-centric design with frontend skills.
+    </p>
+  </section>
+
+  <section class="card">
+    <h2>Skills</h2>
+    <div class="grid">
+      <div class="skill">Figma</div>
+      <div class="skill">Adobe XD</div>
+      <div class="skill">Photoshop</div>
+      <div class="skill">HTML / CSS</div>
+      <div class="skill">JavaScript</div>
+      <div class="skill">React</div>
+      <div class="skill">Tailwind</div>
+      <div class="skill">Git & GitHub</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Projects</h2>
+    <div class="grid">
+      <div class="project">Online Banking Website</div>
+      <div class="project">Social Media Platform</div>
+      <div class="project">E-Commerce Website</div>
+      <div class="project">Cab Booking App</div>
+      <div class="project">Drone Delivery System</div>
+      <div class="project">News & Magazine Portal</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Experience</h2>
+    <p><strong>Pinsphere Incubation Center</strong><br>
+    Dr. N.G.P College, Coimbatore<br>
+    <span style="color:var(--muted)">From September 2024</span></p>
+  </section>
+
+  <section class="card">
+    <h2>Education</h2>
+    <p>B.E Computer Science Engineering<br>
+    Annai Teresa College of Engineering<br>
+    CGPA: 7.21</p>
+  </section>
+
+  <footer>
+    © 2025 Indira Kumar • Designed with ❤️ by Pepper Potts
+  </footer>
+
+</div>
+
+<script>
+const sections=document.querySelectorAll('section');
+const reveal=()=>{
+  sections.forEach(sec=>{
+    const top=sec.getBoundingClientRect().top;
+    if(top<window.innerHeight-100){
+      sec.classList.add('show');
+    }
+  });
+};
+window.addEventListener('scroll',reveal);
+reveal();
+</script>
+
+</body>
+</html>
